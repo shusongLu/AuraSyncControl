@@ -1,4 +1,5 @@
 using AuraServiceLib;
+using Microsoft.Win32;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
@@ -69,6 +70,24 @@ namespace AuraSyncControl
 
             
             Resize += MainForm_Resize; //最小化事件
+
+            SystemEvents.SessionSwitch += new SessionSwitchEventHandler(SystemEvents_SessionSwitch);
+        }
+
+        private void SystemEvents_SessionSwitch(object sender, SessionSwitchEventArgs e)
+        {
+            if (e.Reason == SessionSwitchReason.SessionLock)
+            {
+                // 用户解锁
+                Debug.WriteLine("用户锁屏");
+                CloseRGB();
+            }
+            else if (e.Reason == SessionSwitchReason.SessionUnlock)
+            {
+                // 用户锁屏
+                Debug.WriteLine("用户解锁");
+                OpenRGB();
+            }
         }
 
         /// <summary>
